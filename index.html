@@ -67,6 +67,7 @@
             border-radius: 4px;
             border: 1px solid #ddd;
             font-size: 14px;
+            word-break: break-all;
         }
         .whatsapp-btn {
             display: inline-block;
@@ -102,22 +103,24 @@
     </div>
 </div>
 
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAFAsM0xqmKrnirTKIH9If2s4GuDpmO6BQ&libraries=places"></script>
-
 <script>
-    function initAutocomplete() {
-        // Bind autocomplete to the input field
+    // Modern script loader setup
+    (g=>{var h,a,k,p="The Google Maps JavaScript API",c="google",l="importLibrary",q="__ib__",m=document,b=window;b=b[c]||(b[c]={});var d=b.maps||(b.maps={}),r=d.importLibrary||(d[l]),s=0;function e(){}e.prototype.get=function(f,g){return r?r(f,g):new Promise(function(h,a){var k=m.getElementsByTagName("script")[0],p=m.createElement("script");p.src="https://maps.googleapis.com/maps/api/js?key="+g;d[l]=function(g){return new Promise(function(h){e.prototype.get(g,f).then(h)})};k.parentNode.insertBefore(p,k);e.prototype.get(f,g).then(h,a)})};d[l]=function(f){return new Promise(function(g,h){e.prototype.get(f,"AIzaSyAFAsM0xqmKrnirTKIH9If2s4GuDpmO6BQ").then(g,h)})}})(window);
+
+    async function initApp() {
+        // Import the Places library dynamically using modern framework
+        const { Autocomplete } = await google.maps.importLibrary("places");
+        
         const input = document.getElementById('autocomplete');
-        const autocomplete = new google.maps.places.Autocomplete(input, {
+        const autocomplete = new Autocomplete(input, {
             fields: ['formatted_address', 'geometry']
         });
 
-        // Listen for the event when a user selects an address
         autocomplete.addListener('place_changed', () => {
             const place = autocomplete.getPlace();
 
             if (!place.geometry || !place.formatted_address) {
-                alert("No details available for the selected input.");
+                alert("Please select a valid address from the dropdown list.");
                 return;
             }
 
@@ -125,19 +128,16 @@
             const lat = place.geometry.location.lat();
             const lng = place.geometry.location.lng();
             
-            // Create the Google Maps link using coordinates for precision
+            // Standard universal coordinate URL format
             const mapsLink = `https://www.google.com/maps?q=${lat},${lng}`;
 
-            // Line 1: Address, Line 2: Google Maps Link
+            // Line 1 = Address Text, Line 2 = Map Link
             const messageText = `${address}\n${mapsLink}`;
 
-            // Update UI preview
             document.getElementById('messagePreview').innerText = messageText;
             
-            // Format URL for WhatsApp Web / Mobile App
             const whatsappUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(messageText)}`;
             
-            // Update the button link and reveal the container
             const whatsappBtn = document.getElementById('whatsappLink');
             whatsappBtn.href = whatsappUrl;
             
@@ -145,8 +145,8 @@
         });
     }
 
-    // Initialize the map autocomplete functionality on window load
-    window.onload = initAutocomplete;
+    // Start initialization when DOM content loads
+    document.addEventListener("DOMContentLoaded", initApp);
 </script>
 
 </body>
