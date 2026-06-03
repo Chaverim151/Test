@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Address to WhatsApp Generator</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f5;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .container {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 500px;
+        }
+        h2 {
+            color: #075e54;
+            margin-top: 0;
+            margin-bottom: 20px;
+        }
+        label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+        input[type="text"]:focus {
+            border-color: #25d366;
+            outline: none;
+        }
+        .result-box {
+            display: none;
+            background-color: #e1ffc7;
+            border: 1px solid #b3e5fc;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+        .result-title {
+            font-weight: bold;
+            color: #075e54;
+            margin-bottom: 5px;
+        }
+        .message-preview {
+            white-space: pre-wrap;
+            background: #fff;
+            padding: 10px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+            font-size: 14px;
+        }
+        .whatsapp-btn {
+            display: inline-block;
+            width: 100%;
+            background-color: #25d366;
+            color: white;
+            text-align: center;
+            padding: 12px;
+            text-decoration: none;
+            font-weight: bold;
+            border-radius: 4px;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+        .whatsapp-btn:hover {
+            background-color: #128c7e;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Location Share Link Generator</h2>
+    
+    <label for="autocomplete">Search Address:</label>
+    <input id="autocomplete" type="text" placeholder="Start typing an address...">
+
+    <div id="resultContainer" class="result-box">
+        <div class="result-title">Message Preview:</div>
+        <div id="messagePreview" class="message-preview"></div>
+        <br>
+        <a id="whatsappLink" class="whatsapp-btn" target="_blank" href="#">Send via WhatsApp</a>
+    </div>
+</div>
+
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAFAsM0xqmKrnirTKIH9If2s4GuDpmO6BQ&libraries=places"></script>
+
+<script>
+    function initAutocomplete() {
+        // Bind autocomplete to the input field
+        const input = document.getElementById('autocomplete');
+        const autocomplete = new google.maps.places.Autocomplete(input, {
+            fields: ['formatted_address', 'geometry']
+        });
+
+        // Listen for the event when a user selects an address
+        autocomplete.addListener('place_changed', () => {
+            const place = autocomplete.getPlace();
+
+            if (!place.geometry || !place.formatted_address) {
+                alert("No details available for the selected input.");
+                return;
+            }
+
+            const address = place.formatted_address;
+            const lat = place.geometry.location.lat();
+            const lng = place.geometry.location.lng();
+            
+            // Create the Google Maps link using coordinates for precision
+            const mapsLink = `https://www.google.com/maps?q=${lat},${lng}`;
+
+            // Line 1: Address, Line 2: Google Maps Link
+            const messageText = `${address}\n${mapsLink}`;
+
+            // Update UI preview
+            document.getElementById('messagePreview').innerText = messageText;
+            
+            // Format URL for WhatsApp Web / Mobile App
+            const whatsappUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(messageText)}`;
+            
+            // Update the button link and reveal the container
+            const whatsappBtn = document.getElementById('whatsappLink');
+            whatsappBtn.href = whatsappUrl;
+            
+            document.getElementById('resultContainer').style.display = 'block';
+        });
+    }
+
+    // Initialize the map autocomplete functionality on window load
+    window.onload = initAutocomplete;
+</script>
+
+</body>
+</html>
