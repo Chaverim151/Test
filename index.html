@@ -5,118 +5,198 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Address to WhatsApp Generator</title>
     <style>
+        :root {
+            --primary-color: #0d3b66; /* Clean deep emergency service blue */
+            --accent-color: #25d366;  /* WhatsApp green */
+            --bg-color: #f4f6f9;
+            --card-bg: #ffffff;
+            --text-dark: #2d3748;
+            --border-color: #cbd5e1;
+        }
+
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f0f2f5;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
             margin: 0;
-            padding: 20px;
+            padding: 15px;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
+            box-sizing: border-box;
         }
+
         .container {
-            background-color: #ffffff;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            background-color: var(--card-bg);
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
             width: 100%;
-            max-width: 500px;
+            max-width: 450px;
+            text-align: center;
+            box-sizing: border-box;
         }
+
+        /* Logo Styling */
+        .logo-container {
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .logo-container img {
+            max-width: 180px;
+            height: auto;
+            display: block;
+        }
+
         h2 {
-            color: #075e54;
+            color: var(--primary-color);
             margin-top: 0;
+            margin-bottom: 25px;
+            font-size: 1.4rem;
+            font-weight: 700;
+        }
+
+        .form-group {
+            text-align: left;
             margin-bottom: 20px;
         }
+
         label {
-            font-weight: bold;
+            font-weight: 600;
             display: block;
             margin-bottom: 8px;
-            color: #333;
+            color: var(--text-dark);
+            font-size: 0.95rem;
         }
+
         input[type="text"] {
             width: 100%;
-            padding: 12px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
+            padding: 14px 16px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
             box-sizing: border-box;
             font-size: 16px;
-            margin-bottom: 20px;
+            transition: all 0.3s ease;
+            background-color: #fafafa;
         }
+
         input[type="text"]:focus {
-            border-color: #25d366;
+            border-color: var(--primary-color);
+            background-color: #fff;
             outline: none;
+            box-shadow: 0 0 0 3px rgba(13, 59, 102, 0.15);
         }
+
+        /* Buttons Styling */
         .action-btn {
             width: 100%;
-            background-color: #075e54;
+            background-color: var(--primary-color);
             color: white;
             border: none;
-            padding: 12px;
+            padding: 14px;
             font-size: 16px;
-            font-weight: bold;
-            border-radius: 4px;
+            font-weight: 600;
+            border-radius: 8px;
             cursor: pointer;
             margin-bottom: 20px;
-            transition: background-color 0.3s;
+            transition: background-color 0.2s ease, transform 0.1s ease;
         }
+
         .action-btn:hover {
-            background-color: #054d43;
+            background-color: #092a4a;
         }
+
+        .action-btn:active {
+            transform: scale(0.98);
+        }
+
+        /* Result Panel Styling */
         .result-box {
             display: none;
-            background-color: #e1ffc7;
-            border: 1px solid #b3e5fc;
-            padding: 15px;
-            border-radius: 4px;
-            margin-bottom: 20px;
+            background-color: #f8fafc;
+            border: 1px solid #e2e8f0;
+            padding: 18px;
+            border-radius: 10px;
+            margin-top: 5px;
+            text-align: left;
+            animation: fadeIn 0.3s ease-in-out;
         }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
         .result-title {
-            font-weight: bold;
-            color: #075e54;
-            margin-bottom: 5px;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
+
         .message-preview {
             white-space: pre-wrap;
-            background: #fff;
-            padding: 10px;
-            border-radius: 4px;
-            border: 1px solid #ddd;
+            background: #ffffff;
+            padding: 12px;
+            border-radius: 6px;
+            border: 1px solid #e2e8f0;
             font-size: 14px;
+            color: #334155;
             word-break: break-all;
+            line-height: 1.5;
         }
+
         .whatsapp-btn {
-            display: inline-block;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             width: 100%;
-            background-color: #25d366;
+            background-color: var(--accent-color);
             color: white;
             text-align: center;
-            padding: 12px;
+            padding: 14px;
             text-decoration: none;
-            font-weight: bold;
-            border-radius: 4px;
+            font-weight: 700;
+            border-radius: 8px;
             font-size: 16px;
-            transition: background-color 0.3s;
+            margin-top: 15px;
+            box-sizing: border-box;
+            transition: background-color 0.2s ease, transform 0.1s ease;
         }
+
         .whatsapp-btn:hover {
-            background-color: #128c7e;
+            background-color: #1ebe57;
+        }
+
+        .whatsapp-btn:active {
+            transform: scale(0.98);
         }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h2>Location Share Link Generator</h2>
-    
-    <label for="autocomplete">Search Address:</label>
-    <input id="autocomplete" type="text" placeholder="Start typing an address...">
+    <div class="logo-container">
+        <img src="https://i.ibb.co/j40wTVT/hatzolah-middelessex-county-final-removebg-preview-1-20231129-233435-0000.png" alt="Hatzolah Middlesex County Logo">
+    </div>
 
-    <button id="generateBtn" class="action-btn">Generate Message</button>
+    <h2>Location Share Generator</h2>
+    
+    <div class="form-group">
+        <label for="autocomplete">Search Target Address:</label>
+        <input id="autocomplete" type="text" placeholder="Start typing an address...">
+    </div>
+
+    <button id="generateBtn" class="action-btn">Generate Dispatch Link</button>
 
     <div id="resultContainer" class="result-box">
-        <div class="result-title">Message Preview:</div>
+        <div class="result-title">Message Preview</div>
         <div id="messagePreview" class="message-preview"></div>
-        <br>
         <a id="whatsappLink" class="whatsapp-btn" target="_blank" href="#">Send via WhatsApp</a>
     </div>
 </div>
@@ -149,13 +229,13 @@
             const lng = place.geometry.location.lng();
             
             // Fixed correct template literal syntax for coordinates
-            selectedMapsLink = `https://maps.google.com/?q=${lat},${lng}`;
+            selectedMapsLink = `https://www.google.com/maps?q=${lat},${lng}`;
         });
 
         // Generate the output payload container upon button click
         generateBtn.addEventListener('click', () => {
             if (!selectedAddress) {
-                alert("Please select a location from the dropdown suggestions before clicking generate.");
+                alert("Please type and select a location from the dropdown suggestions list first.");
                 return;
             }
             
