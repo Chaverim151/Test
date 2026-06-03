@@ -47,6 +47,22 @@
             border-color: #25d366;
             outline: none;
         }
+        .action-btn {
+            width: 100%;
+            background-color: #075e54;
+            color: white;
+            border: none;
+            padding: 12px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-bottom: 20px;
+            transition: background-color 0.3s;
+        }
+        .action-btn:hover {
+            background-color: #054d43;
+        }
         .result-box {
             display: none;
             background-color: #e1ffc7;
@@ -95,6 +111,8 @@
     <label for="autocomplete">Search Address:</label>
     <input id="autocomplete" type="text" placeholder="Start typing an address...">
 
+    <button id="generateBtn" class="action-btn">Generate Message</button>
+
     <div id="resultContainer" class="result-box">
         <div class="result-title">Message Preview:</div>
         <div id="messagePreview" class="message-preview"></div>
@@ -104,50 +122,57 @@
 </div>
 
 <script>
-    // Modern script loader setup
-    (g=>{var h,a,k,p="The Google Maps JavaScript API",c="google",l="importLibrary",q="__ib__",m=document,b=window;b=b[c]||(b[c]={});var d=b.maps||(b.maps={}),r=d.importLibrary||(d[l]),s=0;function e(){}e.prototype.get=function(f,g){return r?r(f,g):new Promise(function(h,a){var k=m.getElementsByTagName("script")[0],p=m.createElement("script");p.src="https://maps.googleapis.com/maps/api/js?key="+g;d[l]=function(g){return new Promise(function(h){e.prototype.get(g,f).then(h)})};k.parentNode.insertBefore(p,k);e.prototype.get(f,g).then(h,a)})};d[l]=function(f){return new Promise(function(g,h){e.prototype.get(f,"AIzaSyAFAsM0xqmKrnirTKIH9If2s4GuDpmO6BQ").then(g,h)})}})(window);
+    let selectedAddress = "";
+    let selectedMapsLink = "";
 
-    async function initApp() {
-        // Import the Places library dynamically using modern framework
-        const { Autocomplete } = await google.maps.importLibrary("places");
-        
+    function initAutocomplete() {
         const input = document.getElementById('autocomplete');
-        const autocomplete = new Autocomplete(input, {
+        const generateBtn = document.getElementById('generateBtn');
+        
+        // Initialize autocomplete layout bound to input field
+        const autocomplete = new google.maps.places.Autocomplete(input, {
             fields: ['formatted_address', 'geometry']
         });
 
+        // Triggered when the user selects an address suggestion from the menu
         autocomplete.addListener('place_changed', () => {
             const place = autocomplete.getPlace();
 
             if (!place.geometry || !place.formatted_address) {
-                alert("Please select a valid address from the dropdown list.");
+                selectedAddress = "";
+                selectedMapsLink = "";
                 return;
             }
 
-            const address = place.formatted_address;
+            selectedAddress = place.formatted_address;
             const lat = place.geometry.location.lat();
             const lng = place.geometry.location.lng();
             
-            // Standard universal coordinate URL format
-            const mapsLink = `https://www.google.com/maps?q=${lat},${lng}`;
+            // Fixed correct template literal syntax for coordinates
+            selectedMapsLink = `https://maps.google.com/?q=${lat},${lng}`;
+        });
 
-            // Line 1 = Address Text, Line 2 = Map Link
-            const messageText = `${address}\n${mapsLink}`;
+        // Generate the output payload container upon button click
+        generateBtn.addEventListener('click', () => {
+            if (!selectedAddress) {
+                alert("Please select a location from the dropdown suggestions before clicking generate.");
+                return;
+            }
+            
+            // Line 1: Text Address, Line 2: Universal Map link
+            const messageText = `${selectedAddress}\n${selectedMapsLink}`;
 
             document.getElementById('messagePreview').innerText = messageText;
             
             const whatsappUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(messageText)}`;
-            
-            const whatsappBtn = document.getElementById('whatsappLink');
-            whatsappBtn.href = whatsappUrl;
+            document.getElementById('whatsappLink').href = whatsappUrl;
             
             document.getElementById('resultContainer').style.display = 'block';
         });
     }
-
-    // Start initialization when DOM content loads
-    document.addEventListener("DOMContentLoaded", initApp);
 </script>
+
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB5A1yLequWoCAVK-lPSo6qJc2BIm_5mHo&libraries=places&callback=initAutocomplete" async defer></script>
 
 </body>
 </html>
